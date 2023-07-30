@@ -3,6 +3,6 @@ module.exports = {
     readDir: './images/received/',
     saveDir: './images/sent/',
     waitInMs: 60000,
-    sessionName: 'zeus',
-    chatName: 'Upcam'
+    sessionName: 'yourSessionName',
+    chatName: 'yourChatName'
 };
