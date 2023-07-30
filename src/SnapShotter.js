@@ -17,7 +17,7 @@ async function initializeClient() {
     const store = new MongoStore({ mongoose: mongoose });
     await store.sessionExists({ session: config.sessionName });
 
-    client = new Client({ // Assign to the outer client variable
+    client = new Client({ 
         authStrategy: new RemoteAuth({
             store: store,
             backupSyncIntervalMs: 300000
@@ -32,7 +32,7 @@ async function initializeClient() {
 
 async function processChats() {
     console.log('Client is ready!');
-    const chats = await client.getChats(); // Now this should work
+    const chats = await client.getChats(); 
     for (let c of chats) {
         if (c.name === config.chatName) {
             console.log(`Chat ${config.chatName} found.`);
