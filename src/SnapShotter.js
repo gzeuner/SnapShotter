@@ -38,7 +38,7 @@ async function processChats() {
         if (c.name === config.chatName) {
             console.log(`Chat ${config.chatName} found.`);
             chatGroup = c;
-			console.log("Waiting for new Images ...");
+            console.log("Waiting for new Images ...");
             watchDirectory(config.readDir);
             break;
         }
