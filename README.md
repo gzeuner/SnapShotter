@@ -16,7 +16,7 @@ Please note: SnapShotter is intended for personal use. Ensure to respect WhatsAp
 
 ## Getting Started
 
-To get started, clone this repository, install the necessary dependencies with `npm install`, and update the `config.js` file with your specific details. Start the script with `node script.js`.
+To get started, clone this repository, install the necessary dependencies with `npm install`, and update the `config.js` file with your specific details. Start the script with `node SnapShotter.js`.
 
 Happy monitoring!
 
@@ -40,6 +40,6 @@ Bitte beachten Sie: SnapShotter ist für den persönlichen Gebrauch gedacht. Ach
 
 ## Erste Schritte
 
-Um loszulegen, klonen Sie dieses Repository, installieren Sie notwendigen Abhängigkeiten mit `npm install` und aktualisieren Sie die `config.js` Datei mit Ihren spezifischen Angaben. Starten Sie das Skript mit `node script.js`.
+Um loszulegen, klonen Sie dieses Repository, installieren Sie notwendigen Abhängigkeiten mit `npm install` und aktualisieren Sie die `config.js` Datei mit Ihren spezifischen Angaben. Starten Sie das Skript mit `node SnapShotter.js`.
 
 Viel Spaß bei der Überwachung!
