@@ -7,8 +7,9 @@ const { Client, RemoteAuth, MessageMedia } = require('whatsapp-web.js');
 const { MongoStore } = require('wwebjs-mongo');
 const mongoose = require('mongoose');
 const config = require('./config');
+const chokidar = require('chokidar');
 
-let upcamChat;
+let chatGroup;
 let client;
 
 mongoose.connect(config.MONGODB_URI).then(initializeClient);
@@ -36,57 +37,57 @@ async function processChats() {
     for (let c of chats) {
         if (c.name === config.chatName) {
             console.log(`Chat ${config.chatName} found.`);
-            upcamChat = c;
-            setTimeout(processImageFiles, config.waitInMs);
+            chatGroup = c;
+			console.log("Waiting for new Images ...");
+            watchDirectory(config.readDir);
             break;
         }
     }
 }
 
+function watchDirectory(directory) {
+    const watcher = chokidar.watch(directory, {
+        ignored: /(^|[\/\\])\../, // ignore dotfiles
+        persistent: true
+    });
 
-async function processImageFiles() {
-    console.log('Waiting for new Images....');
-    const files = await fs.readdir(config.readDir);
-    files.sort();
-
-    for (const file of files) {
-        try {
-            await processFile(file);
-        } catch (err) {
-            console.error(`Error processing file ${file}:`, err);
+    watcher.on('add', async (filePath) => {
+        const file = path.basename(filePath);
+        if (path.extname(file) === config.fileExtension && await isWritable(filePath)) {
+            await processFile(filePath);
         }
-    }
-
-    setTimeout(processImageFiles, config.waitInMs);
+    });
 }
 
-async function processFile(file) {
-    const fileDetails = await fs.lstat(path.resolve(config.readDir, file));
-    if (fileDetails.isDirectory()) {
-        console.log('Directory: ' + file);
-    } else if (path.extname(file) === '.jpg' && isWritable(config.readDir + file)) {
-        await sendImage(config.readDir + file);
-        await moveFile(file);
-    }
+async function processFile(filePath) {
+    await sendImage(filePath);
+    await moveFile(filePath);
 }
 
 async function sendImage(image) {
     console.log('Sending Image > ' + image);
     const media = MessageMedia.fromFilePath(image);
-    return upcamChat.sendMessage(media);
+    return chatGroup.sendMessage(media);
 }
 
-async function moveFile(file) {
-    await fileTools.move(config.readDir + file, config.saveDir + file, { overwrite: true });
-    console.log("Moved image > : " + config.saveDir + file);
+async function moveFile(filePath) {
+    const destination = path.join(config.saveDir, path.basename(filePath));
+    await fileTools.move(filePath, destination, { overwrite: true });
+    console.log("Moved image > : " + destination);
 }
 
-function isWritable(filePath) {
+async function isWritable(filePath) {
+    let fileHandle;
     try {
-        fs.closeSync(fs.openSync(filePath, 'r+'));
+        fileHandle = await fs.open(filePath, 'r+');
         return true;
     } catch (err) {
         console.log('Cannot open file!');
         return false;
+    } finally {
+        if (fileHandle) {
+            // Close the file if it was opened
+            await fileHandle.close();
+        }
     }
 }

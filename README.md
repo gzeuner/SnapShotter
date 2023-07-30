@@ -42,4 +42,4 @@ Bitte beachten Sie: SnapShotter ist für den persönlichen Gebrauch gedacht. Ach
 
 Um loszulegen, klonen Sie dieses Repository, installieren Sie notwendigen Abhängigkeiten mit `npm install` und aktualisieren Sie die `config.js` Datei mit Ihren spezifischen Angaben. Starten Sie das Skript mit `node SnapShotter.js`.
 
-Viel Spaß bei der Überwachung!
+Viel Spaß!
