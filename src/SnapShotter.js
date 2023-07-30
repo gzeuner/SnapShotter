@@ -9,7 +9,7 @@ const mongoose = require('mongoose');
 const config = require('./config');
 
 let upcamChat;
-let client; // Declare client here
+let client;
 
 mongoose.connect(config.MONGODB_URI).then(initializeClient);
 
