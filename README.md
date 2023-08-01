@@ -20,6 +20,10 @@ To get started, clone this repository, install the necessary dependencies with `
 
 Supplementary: [upcam-client](https://github.com/gzeuner/upcam-client) to download images from upcam and compatible devices.
 
+# Visit  
+
+[tiny-tool.de](https://tiny-tool.de/).
+
 Happy monitoring!
 
 ---
@@ -45,5 +49,9 @@ Bitte beachten Sie: SnapShotter ist für den persönlichen Gebrauch gedacht. Ach
 Um loszulegen, klonen Sie dieses Repository, installieren Sie notwendigen Abhängigkeiten mit `npm install` und aktualisieren Sie die `config.js` Datei mit Ihren spezifischen Angaben. Starten Sie das Skript mit `node SnapShotter.js`.
 
 Ergänzend: [upcam-client](https://github.com/gzeuner/upcam-client) zum Herunterladen von Bildern von upcam Tornado Pro und kompatiblen Geräten.
+
+# Besuchen Sie
+
+[tiny-tool.de](https://tiny-tool.de/).
 
 Viel Spaß!
