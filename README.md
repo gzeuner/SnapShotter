@@ -18,6 +18,8 @@ Please note: SnapShotter is intended for personal use. Ensure to respect WhatsAp
 
 To get started, clone this repository, install the necessary dependencies with `npm install`, and update the `config.js` file with your specific details. Start the script with `node SnapShotter.js`.
 
+Supplementary: [upcam-client](https://github.com/gzeuner/upcam-client) to download images from upcam and compatible devices.
+
 Happy monitoring!
 
 ---
@@ -41,5 +43,7 @@ Bitte beachten Sie: SnapShotter ist für den persönlichen Gebrauch gedacht. Ach
 ## Erste Schritte
 
 Um loszulegen, klonen Sie dieses Repository, installieren Sie notwendigen Abhängigkeiten mit `npm install` und aktualisieren Sie die `config.js` Datei mit Ihren spezifischen Angaben. Starten Sie das Skript mit `node SnapShotter.js`.
+
+Ergänzend: [upcam-client](https://github.com/gzeuner/upcam-client) zum Herunterladen von Bildern von upcam Tornado Pro und kompatiblen Geräten.
 
 Viel Spaß!
