@@ -21,46 +21,54 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 */
-
 /*
  * SnapShotter: Automating surveillance image notifications
  * through WhatsApp using Node.js and the whatsapp-web.js library.
-*/
+ */
+
 // Requiring necessary modules and config file
 const fs = require('fs').promises;
 const fileTools = require('fs-extra');
 const path = require('path');
 const qrcode = require('qrcode-terminal');
-const { Client, RemoteAuth, MessageMedia } = require('whatsapp-web.js');
-const { MongoStore } = require('wwebjs-mongo');
-const mongoose = require('mongoose');
+const { Client, LocalAuth, MessageMedia } = require('whatsapp-web.js');
 const config = require('./config');
 const chokidar = require('chokidar');
 
 let chatGroup;
 let client;
 
-mongoose.connect(config.MONGODB_URI).then(initializeClient);
+// Initialize WhatsApp Client with LocalAuth
+client = new Client({ 
+    authStrategy: new LocalAuth()
+});
 
-async function initializeClient() {
-    const store = new MongoStore({ mongoose: mongoose });
-    await store.sessionExists({ session: config.sessionName });
+client.initialize();
 
-    client = new Client({ 
-        authStrategy: new RemoteAuth({
-            store: store,
-            backupSyncIntervalMs: 300000
-        })
-    });
+// Client event listeners for better logging
+client.on('qr', (qr) => {
+    qrcode.generate(qr, { small: true });
+    console.log('QR Code generated');
+});
 
-    client.initialize();
-    client.on('remote_session_saved', () => console.log('remote_session_saved'));
-    client.on('qr', (qr) => qrcode.generate(qr, { small: true }));
-    client.on('ready', processChats);
-}
+client.on('ready', () => {
+    console.log('Client is ready!');
+    processChats();
+});
+
+client.on('authenticated', () => {
+    console.log('Authenticated with WhatsApp Web');
+});
+
+client.on('auth_failure', msg => {
+    console.error('Authentication failure:', msg);
+});
+
+client.on('disconnected', (reason) => {
+    console.log('Client was logged out', reason);
+});
 
 async function processChats() {
-    console.log('Client is ready!');
     const chats = await client.getChats(); 
     for (let c of chats) {
         if (c.name === config.chatName) {
@@ -110,11 +118,10 @@ async function isWritable(filePath) {
         fileHandle = await fs.open(filePath, 'r+');
         return true;
     } catch (err) {
-        console.log('Cannot open file!');
+        console.log('Cannot open file:', err.message);
         return false;
     } finally {
         if (fileHandle) {
-            // Close the file if it was opened
             await fileHandle.close();
         }
     }
