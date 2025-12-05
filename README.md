@@ -9,14 +9,20 @@ The script utilizes [whatsapp-web.js](https://github.com/pedroslopez/whatsapp-we
 - Real-time monitoring of a directory for new images
 - Automatic sending of images to a defined WhatsApp group
 - Moving of sent images to a separate directory
-- Integration with MongoDB for storing session data, allowing reconnection to WhatsApp without repeated QR code scanning
-- Customizable settings for directory paths, MongoDB connection, and other key parameters
+- Local session storage via whatsapp-web.js `LocalAuth` (no MongoDB required)
+- Customizable settings for directory paths, chat name, and file type
 
 Please note: SnapShotter is intended for personal use. Ensure to respect WhatsApp's terms of service and obtain necessary permissions before sending content.
 
 ## Getting Started
 
-To get started, clone this repository, install the necessary dependencies with `npm install`, and update the `config.js` file with your specific details. Start the script with `node SnapShotter.js`.
+1. Install dependencies: `npm install`
+2. Configure `src/config.js`:
+   - `chatName`: WhatsApp chat/group name to send images to
+   - `readDir` / `saveDir`: folders to watch and to move sent images to
+   - `fileExtension`: file type to process (default `.jpg`)
+3. Start the script: `node src/SnapShotter.js`
+   - The WhatsApp session is stored locally (folder `.wwebjs_auth`)
 
 Supplementary: [upcam-client](https://github.com/gzeuner/upcam-client) to download images from upcam and compatible devices.
 
@@ -39,14 +45,20 @@ Das Skript verwendet [whatsapp-web.js](https://github.com/pedroslopez/whatsapp-w
 - Echtzeit-Überwachung eines Verzeichnisses auf neue Bilder
 - Automatischer Versand von Bildern an eine definierte WhatsApp-Gruppe
 - Verschieben der gesendeten Bilder in ein separates Verzeichnis
-- Integration mit MongoDB zur Speicherung von Sitzungsdaten, ermöglicht erneute Verbindung mit WhatsApp ohne wiederholtes Scannen von QR-Codes
-- Anpassbare Einstellungen für Verzeichnispfade, MongoDB-Verbindung und weitere Schlüsselparameter
+- Lokale Sitzungspeicherung per whatsapp-web.js `LocalAuth` (kein MongoDB erforderlich)
+- Anpassbare Einstellungen für Verzeichnispfade, Chat-Namen und Dateityp
 
 Bitte beachten Sie: SnapShotter ist für den persönlichen Gebrauch gedacht. Achten Sie darauf, dass Sie die Nutzungsbedingungen von WhatsApp respektieren und die notwendigen Genehmigungen einholen, bevor Sie Inhalte senden.
 
 ## Erste Schritte
 
-Um loszulegen, klonen Sie dieses Repository, installieren Sie notwendigen Abhängigkeiten mit `npm install` und aktualisieren Sie die `config.js` Datei mit Ihren spezifischen Angaben. Starten Sie das Skript mit `node SnapShotter.js`.
+1. Abhängigkeiten installieren: `npm install`
+2. `src/config.js` anpassen:
+   - `chatName`: Name des WhatsApp-Chats bzw. der Gruppe, an den/die gesendet wird
+   - `readDir` / `saveDir`: Verzeichnisse zum Überwachen bzw. Verschieben gesendeter Dateien
+   - `fileExtension`: zu verarbeitender Dateityp (Standard `.jpg`)
+3. Skript starten: `node src/SnapShotter.js`
+   - Die WhatsApp-Sitzung wird lokal gespeichert (Ordner `.wwebjs_auth`)
 
 Ergänzend: [upcam-client](https://github.com/gzeuner/upcam-client) zum Herunterladen von Bildern von upcam Tornado Pro und kompatiblen Geräten.
 
