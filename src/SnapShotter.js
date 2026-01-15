@@ -137,6 +137,7 @@ async function safeStartWorkers() {
     await ensureDirs();
     await waitForWWebInjection(); // ensure window.Store is injected
     await waitForWWebJS();        // ensure WWebJS.getChat exists
+    await patchSendSeen();        // avoid WA Web regression crashing sendMessage
     await processChats();
   } catch (e) {
     console.error('[START] Failed to start workers:', e);
@@ -194,6 +195,24 @@ async function waitForWWebJS(timeoutMs = 120_000) {  // extended timeout
   }
   console.error('[INJECT] waitForWWebJS timed out - aborting.');
   throw new Error('WWebJS injection timeout');
+}
+
+// Work around WA Web regressions in sendSeen
+async function patchSendSeen() {
+  await client.pupPage.evaluate(() => {
+    if (!window.WWebJS || !window.WWebJS.sendSeen) return;
+    if (window.WWebJS.sendSeen._patched) return;
+    const original = window.WWebJS.sendSeen;
+    const wrapped = async (chat) => {
+      try {
+        return await original(chat);
+      } catch (_) {
+        return null;
+      }
+    };
+    wrapped._patched = true;
+    window.WWebJS.sendSeen = wrapped;
+  });
 }
 
 // -----------------------------------------------------------------------------
