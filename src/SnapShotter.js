@@ -201,11 +201,12 @@ async function waitForWWebJS(timeoutMs = 120_000) {  // extended timeout
 async function patchSendSeen() {
   await client.pupPage.evaluate(() => {
     if (!window.WWebJS || !window.WWebJS.sendSeen) return;
-    if (window.WWebJS.sendSeen._patched) return;
-    const original = window.WWebJS.sendSeen;
+    const current = window.WWebJS.sendSeen;
+    if (current._patched) return;
     const wrapped = async (chat) => {
       try {
-        return await original(chat);
+        if (!chat || !chat.id) return null;
+        return await current(chat);
       } catch (_) {
         return null;
       }
@@ -324,6 +325,7 @@ async function sendImage(image) {
   const maxTries = 6;
   for (let i = 1; i <= maxTries; i++) {
     try {
+      await patchSendSeen();
       await client.sendMessage(chatId, media);
       return;
     } catch (e) {
