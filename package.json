@@ -1,8 +1,15 @@
 {
+  "scripts": {
+    "analyze:samples": "node src/analyzeSamples.js",
+    "capture:live": "node src/captureLiveSnapshots.js",
+    "eval:dataset": "node src/evaluateDataset.js",
+    "test": "node --test test/*.test.js"
+  },
   "dependencies": {
-    "chokidar": "^3.5.3",
-    "fs-extra": "^11.2.0",
+    "chokidar": "^3.6.0",
+    "fs-extra": "^11.3.4",
     "qrcode-terminal": "^0.12.0",
-    "whatsapp-web.js": "^1.34.1"
+    "sharp": "^0.34.5",
+    "whatsapp-web.js": "1.34.6"
   }
 }
