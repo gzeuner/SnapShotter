@@ -1,15 +1,26 @@
 # SnapShotter
 
-`SnapShotter` watches `./images/received/`, applies deterministic motion filtering, and sends accepted images to WhatsApp.
+`SnapShotter` is the Node runtime for motion evaluation and WhatsApp delivery.
+It consumes images produced by the Java ingest service.
 
-## Runtime flow
+## Runtime Flow
 
-1. Java ingestor writes image + sidecar JSON metadata (`cameraSignal`, prefilter diagnostics).
-2. Node detector evaluates each frame:
-   - primary: REOLINK native signal from metadata
-   - fallback: frame-to-frame grayscale delta in ROI
-3. Accepted frames move to `./images/sent/`; skipped frames move to `./images/filtered/`.
-4. WhatsApp delivery runs in a separate queue.
+1. Java writes frame files into `./images/received/` and optional sidecar JSON metadata.
+2. SnapShotter evaluates motion for each frame.
+3. Accepted frames are delivered to WhatsApp and moved to `./images/sent/`.
+4. Rejected frames are moved to `./images/filtered/`.
+5. Runtime health and decision telemetry are written to `./.state/`.
+
+## Requirements
+
+- Node.js 20+
+- npm
+
+Install dependencies:
+
+```bash
+npm ci
+```
 
 ## Start
 
@@ -20,19 +31,37 @@ node src/SnapShotter.js
 ## Tests
 
 ```bash
-node --test test/*.test.js
+npm test
 ```
 
-## Important config (`src/config.js`)
+## Configuration
 
-- `imageFilter.nativeSignal.enabled`
+Main config file:
+
+- `src/config.js`
+
+Most relevant sections:
+
+- `imageFilter.nativeSignal.*`
 - `imageFilter.delta.*`
 - `imageFilter.brightnessGuard.*`
 - `imageFilter.event.*`
 - `runtime.*`
+- `whatsapp.*`
+- `logging.*`
 
-## Operational files
+## Operational Files
 
 - Health: `./.state/runtime-health.json`
 - Decisions: `./.state/decisions.ndjson`
 - Notifications: `./.state/notifications.ndjson`
+- Logs: `./logs/`
+
+## Security Notes
+
+Do not commit runtime/auth artifacts:
+
+- `.wwebjs_auth/`
+- `.state/`
+- `images/`
+- `logs/`
