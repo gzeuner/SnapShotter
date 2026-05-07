@@ -52,6 +52,7 @@ const {
   RECOVERY_STEPS,
   computeRecoveryStep,
   formatWhatsAppCaption,
+  isBrowserProfileLockError,
   planBrowserSessionCleanup,
   pickMessageTimestamp,
   pruneRecoveryHistory,
@@ -247,8 +248,11 @@ async function findBrowserProcessesForSessionDir(sessionDir) {
     "Get-CimInstance Win32_Process |",
     "Where-Object {",
     "  $_.CommandLine -and",
-    "  ($_.Name -match '^(chrome|chromium|msedge)(\\.exe)?$') -and",
-    "  $_.CommandLine.IndexOf($target, [System.StringComparison]::OrdinalIgnoreCase) -ge 0",
+    "  $_.CommandLine.IndexOf($target, [System.StringComparison]::OrdinalIgnoreCase) -ge 0 -and",
+    "  (",
+    "    $_.CommandLine -match '--user-data-dir' -or",
+    "    $_.Name -match '^(chrome|chromium|msedge|chrome-headless-shell|headless_shell)(\\.exe)?$'",
+    "  )",
     "} |",
     "Select-Object -ExpandProperty ProcessId"
   ].join(' ');
@@ -891,8 +895,10 @@ function computeInitializeRecoveryOptions(baseOptions = {}, error = null) {
   const normalized = normalizeReconnectOptions(baseOptions);
   const message = String(error?.message || error || '').toLowerCase();
   const timeoutLike = message.includes('timeout');
+  const browserProfileLock = isBrowserProfileLockError(error);
   const browserRestart = normalized.forceBrowserRestart
     || normalized.resetAuth
+    || browserProfileLock
     || timeoutLike
     || isTransientBrowserError(error)
     || whatsappHealth.consecutiveInitializeFailures >= 2;

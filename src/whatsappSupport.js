@@ -113,7 +113,10 @@ function isBrowserProfileLockError(error) {
     || (
       message.includes('userdatadir')
       && message.includes('stop the running browser first')
-    );
+    )
+    || message.includes('profile appears to be in use by another')
+    || message.includes('already in use by another google chrome process')
+    || message.includes('processsingleton');
 }
 
 function planBrowserSessionCleanup({
