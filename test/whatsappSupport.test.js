@@ -84,6 +84,14 @@ test('isBrowserProfileLockError detects chromium profile lock messages', () => {
     isBrowserProfileLockError("Use a different 'userDataDir' or stop the running browser first."),
     true
   );
+  assert.equal(
+    isBrowserProfileLockError('The profile appears to be in use by another Google Chrome process (30).'),
+    true
+  );
+  assert.equal(
+    isBrowserProfileLockError('processsingleton lock held by another process'),
+    true
+  );
   assert.equal(isBrowserProfileLockError('some other initialize_failed'), false);
 });
 
