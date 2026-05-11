@@ -8,7 +8,7 @@ const { ReolinkSnapshotClient, readJavaProperties } = require('./reolinkSnapshot
 const DEFAULT_COUNT = 6;
 const DEFAULT_DELAY_MS = 450;
 const OUTPUT_DIR = path.resolve(__dirname, '..', '.state', 'live-check');
-const PROPERTIES_FILE = path.resolve(__dirname, '..', '..', 'src', 'main', 'resources', 'upcamclient.properties');
+const PROPERTIES_FILE = path.resolve(__dirname, '..', '..', 'src', 'main', 'resources', 'application.properties');
 
 async function main() {
   const options = parseArgs(process.argv.slice(2));
