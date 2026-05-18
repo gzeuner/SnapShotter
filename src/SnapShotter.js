@@ -279,6 +279,18 @@ async function removeChromiumSingletonArtifacts(sessionDir) {
   return removed;
 }
 
+async function terminateGlobalBrowserProcesses(reason = 'unknown') {
+  if (process.platform !== 'win32') {
+    return;
+  }
+
+  for (const imageName of ['chrome.exe', 'chromium.exe', 'msedge.exe']) {
+    await execFileQuiet('taskkill', ['/F', '/IM', imageName, '/T'], { timeoutMs: 12_000 });
+  }
+
+  console.warn(`[CLIENT] Globaler Browser-Kill ausgeführt reason=${reason}`);
+}
+
 async function cleanupWhatsAppBrowserSession(options = {}) {
   const sessionDir = getWhatsAppSessionDir();
   if (!await fileTools.pathExists(sessionDir)) {
@@ -286,6 +298,7 @@ async function cleanupWhatsAppBrowserSession(options = {}) {
   }
 
   const reason = options.reason || 'cleanup';
+  console.warn(`[CLIENT] Session-Cleanup gestartet reason=${reason} sessionDir=${sessionDir}`);
   const pids = new Set();
   if (Number.isFinite(options.browserPid) && options.browserPid > 0) {
     pids.add(options.browserPid);
@@ -298,10 +311,19 @@ async function cleanupWhatsAppBrowserSession(options = {}) {
     for (const pid of pids) {
       await terminateProcessTree(pid, reason);
     }
-    await delay(500);
+    await delay(800);
   }
 
-  const remainingPids = await findBrowserProcessesForSessionDir(sessionDir);
+  let remainingPids = await findBrowserProcessesForSessionDir(sessionDir);
+  if (remainingPids.length > 0 && options.forceTerminate && process.platform === 'win32') {
+    console.warn(
+      `[CLIENT] Browser-Profillock bleibt aktiv, starte globalen Fallback reason=${reason} pids=${remainingPids.join(',')}`
+    );
+    await terminateGlobalBrowserProcesses(reason);
+    await delay(1_200);
+    remainingPids = await findBrowserProcessesForSessionDir(sessionDir);
+  }
+
   if (remainingPids.length > 0) {
     console.warn(
       `[CLIENT] Browser-Profillock weiterhin aktiv reason=${reason} sessionDir=${sessionDir} pids=${remainingPids.join(',')}`
@@ -309,7 +331,8 @@ async function cleanupWhatsAppBrowserSession(options = {}) {
     return;
   }
 
-  await removeChromiumSingletonArtifacts(sessionDir);
+  const removedArtifacts = await removeChromiumSingletonArtifacts(sessionDir);
+  console.log(`[CLIENT] Session-Cleanup abgeschlossen reason=${reason} removedArtifacts=${removedArtifacts}`);
 }
 
 function createClient() {
