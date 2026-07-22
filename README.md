@@ -1,4 +1,9 @@
 # 📸 SnapShotter
+> **Note (2026-07):** Active development has moved to the successor project **zeus-herald**.
+> This repository is in maintenance-only mode (security/critical fixes may still apply).
+> Prefer Telegram Bot + ntfy via zeus-herald; WhatsApp/Puppeteer paths are discontinued for new work.
+> See the discontinuation notice in the zeus-herald repository (`docs/DISCONTINUATION.md`).
+
 
 ![Node.js](https://img.shields.io/badge/Node.js-20%2B-green)
 ![npm](https://img.shields.io/badge/npm-supported-red)
